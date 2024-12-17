@@ -1,5 +1,5 @@
 //import {v4 as uuid} from "uuid"
-import { IProduct } from "../interfaces";
+import { IProduct,IFormInput } from "../interfaces";
 
 
 export const productList:IProduct [] = [
@@ -100,4 +100,34 @@ export const productList:IProduct [] = [
             imageURL:"https://media.gettyimages.com/id/458671775/photo/lexus-is-350-2010.jpg?s=612x612&w=0&k=20&c=1tJXRvwgSAfUJ2k4LH0nHaKz1fN5Hv2P-gtOameDRDA=",
         }
     },
+]
+
+export const formInputList: IFormInput [] = [
+{
+    id:"title",
+    name:"title",
+    label:"Product Title",
+    type:"text",
+},
+
+{
+    id:"description",
+    name:"description",
+    label:"Product description",
+    type:"text",
+},
+
+{
+    id:"image",
+    name:"imageURL",
+    label:"Product image URL",
+    type:"text",
+},
+
+{
+    id:"price",
+    name:"price",
+    label:"Product Price",
+    type:"text",
+}
 ]

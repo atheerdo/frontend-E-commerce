@@ -2,5 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-
+body{
+    background-color: hwb(0 92% 6% / 0.667);
+}
 
