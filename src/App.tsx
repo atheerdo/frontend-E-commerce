@@ -1,32 +1,68 @@
 import ProductCard from "./components/ProductCard";
 import { productList,formInputList } from "./data";
 import Modal from "./components/ui/Modal";
-import {useState}from "react";
+import {useState,ChangeEvent,FormEvent}from "react";
 import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
+import {IProduct} from "./interfaces";
 
 
 function App() {
+
+  const defaultProductObj =
+    {
+      id:"",
+      title:"",
+      description:"",
+      imageURL:"",
+      price:"",
+      colors:[],
+      category:{
+          name:"",
+          imageURL:"",
+      },
+  };
+
 /* State */
-  const [isOpen, setIsOpen] = useState(false)
+
+  const [product,setProduct] = useState<IProduct>(defaultProductObj);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const openModal = () =>  setIsOpen(true);
+  const closeModal = () =>  setIsOpen(false);
+  
+
+  
+  
   
 /* Handler */
-    function openModal() {
-      setIsOpen(true)
-    }
     
-      function closeModal() {
-      setIsOpen(false)
-    }
- 
+const onChangeEventHandler = (event:ChangeEvent<HTMLInputElement>) =>
+{
+  const {value,name} = event.target;
+
+  setProduct({...product,[name]:value});
+
+}
+
+const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
+  event.preventDefault();
+  console.log(product);
+}
+
+const onCancel = () => {
+  setProduct(defaultProductObj);
+  closeModal();
+}
+
 /* Renders */
   const renderProductList = productList.map(product => <ProductCard key={product.id} product={product}/>);
 
   const renderFormInputList = formInputList.map(input => (
-      <div className="flex flex-col mb-2">
+      <div className="flex flex-col mb-2" key={input.id}>
           <label htmlFor={input.id} className="mb-1 font-medium">{input.label}</label>
-          <Input type={input.type} id={input.id} name={input.name}/>
-     </div>
+          <Input type={input.type} id={input.id} name={input.name} value={product[input.name]} onChange={onChangeEventHandler}/>
+      </div>
   ))
 
   return (
@@ -41,13 +77,14 @@ function App() {
           {renderProductList}
         </div>
         <Modal isOpen={isOpen} closeModal={closeModal} title="Add A New Product">
-         <form className="space-y-3">
-            {renderFormInputList}
 
-            <div className="flex items-center space-x-3 ">
-              <Button className="bg-blue-600 hover:bg-blue-800 duration-500" >Submit</Button>
-              <Button className="bg-gray-400 hover:bg-gray-600 duration-500" >Cancel</Button>
-          </div>
+         <form className="space-y-3" onSubmit={onSubmitForm}>
+                {renderFormInputList}
+
+                <div className="flex items-center space-x-3 ">
+                  <Button className="bg-blue-600 hover:bg-blue-800 duration-500" >Submit</Button>
+                  <Button className="bg-gray-400 hover:bg-gray-600 duration-500" onClick={onCancel}>Cancel</Button>
+              </div>
          </form>
          
         </Modal>
