@@ -5,6 +5,8 @@ import {useState,ChangeEvent,FormEvent}from "react";
 import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import {IProduct} from "./interfaces";
+import {productValidation} from "./validation";
+import { Description } from "@headlessui/react";
 
 
 function App() {
@@ -45,15 +47,24 @@ const onChangeEventHandler = (event:ChangeEvent<HTMLInputElement>) =>
 
 }
 
-const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
-  event.preventDefault();
-  console.log(product);
-}
-
 const onCancel = () => {
   setProduct(defaultProductObj);
   closeModal();
 }
+
+const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
+  event.preventDefault();
+
+  const error = productValidation({
+    title:product.title,
+    description:product.description,
+    imageURL:product.imageURL,
+    price:product.price});
+
+  console.log(error);
+}
+
+
 
 /* Renders */
   const renderProductList = productList.map(product => <ProductCard key={product.id} product={product}/>);
