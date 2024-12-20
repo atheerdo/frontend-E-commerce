@@ -6,7 +6,8 @@ import Button from "./components/ui/Button";
 import Input from "./components/ui/Input";
 import {IProduct} from "./interfaces";
 import {productValidation} from "./validation";
-import { Description } from "@headlessui/react";
+import ErrorMessage from "./components/ErrorMessage";
+
 
 
 function App() {
@@ -28,6 +29,10 @@ function App() {
 /* State */
 
   const [product,setProduct] = useState<IProduct>(defaultProductObj);
+  const [errors,setError] = useState({title:"",description:"",imageURL:"",price:""});
+
+
+ 
 
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () =>  setIsOpen(true);
@@ -45,6 +50,8 @@ const onChangeEventHandler = (event:ChangeEvent<HTMLInputElement>) =>
 
   setProduct({...product,[name]:value});
 
+  setError({...errors,[name]:""});
+
 }
 
 const onCancel = () => {
@@ -55,14 +62,24 @@ const onCancel = () => {
 const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
   event.preventDefault();
 
-  const error = productValidation({
+  const errors = productValidation
+  ({
     title:product.title,
     description:product.description,
     imageURL:product.imageURL,
-    price:product.price});
+    price:product.price,
+  });
 
-  console.log(error);
-}
+  const hasErrorMessage = Object.values(errors).some(value => value === '') && Object.values(errors).every(value => value ==='');
+
+
+    if(!hasErrorMessage)
+      setError(errors);
+      return;
+
+    
+  }
+
 
 
 
@@ -73,6 +90,8 @@ const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
       <div className="flex flex-col mb-2" key={input.id}>
           <label htmlFor={input.id} className="mb-1 font-medium">{input.label}</label>
           <Input type={input.type} id={input.id} name={input.name} value={product[input.name]} onChange={onChangeEventHandler}/>
+
+          <ErrorMessage message={errors[input.name]}/>
       </div>
   ))
 

@@ -1,12 +1,10 @@
 
  // validat imageURL
-function isValidImageUrl(url: string): boolean
- {
-     const regex = /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp))$/;
-     return regex.test(url);
- }
- 
-  
+ function isValidUrl(url: string): boolean {
+    const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}(\/[a-zA-Z0-9\-._~:/?#@!$&'()*+,;=]*)?$/;
+    return urlPattern.test(url);
+}
+
 
 //** product Obj == errorsObj (title, description, imageURL, price)
 export const productValidation = (product:{title:string; description:string; imageURL:string; price:string;}) => {
@@ -23,12 +21,12 @@ export const productValidation = (product:{title:string; description:string; ima
         error.title = "product title filed must be between 10 and 70 character!";
     }
 
-    if(!product.description.trim() || product.description.length < 10 || product.description.length > 200)
+    if(!product.description.trim() || product.description.length < 30 || product.description.length > 200)
     {
-            error.description = "product title filed must be between 10 and 200 character!";
+            error.description = "product title filed must be between 30 and 200 character!";
     }
 
-    if(!product.imageURL.trim() || !isValidImageUrl(product.imageURL))
+    if(!product.imageURL.trim() || !isValidUrl(product.imageURL))
     {
         error.imageURL = "Valid, image URL is required!";
     }
