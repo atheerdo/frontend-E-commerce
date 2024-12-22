@@ -4,7 +4,7 @@ interface IProps{
 
 const ErrorMessage =({message}:IProps) => {
     return (
-        message ? <p className="text-red-500 text-xs mt-1">{message}</p> : null
+        message ? <span className="text-red-500 text-xs mt-1">{message}</span> : null
     )
 }
 

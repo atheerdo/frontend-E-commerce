@@ -1,5 +1,5 @@
 import ProductCard from "./components/ProductCard";
-import { productList,formInputList } from "./data";
+import { productList,formInputList,colors } from "./data";
 import Modal from "./components/ui/Modal";
 import {useState,ChangeEvent,FormEvent}from "react";
 import Button from "./components/ui/Button";
@@ -7,6 +7,8 @@ import Input from "./components/ui/Input";
 import {IProduct} from "./interfaces";
 import {productValidation} from "./validation";
 import ErrorMessage from "./components/ErrorMessage";
+import CircleColor from "./components/CircleColor";
+import {v4 as uuid} from "uuid"
 
 
 
@@ -28,9 +30,12 @@ function App() {
 
 /* State */
 
+  const [products,setProducts] = useState<IProduct[]>(productList);
   const [product,setProduct] = useState<IProduct>(defaultProductObj);
   const [errors,setError] = useState({title:"",description:"",imageURL:"",price:""});
+  const [tempColor,setTempColor] = useState<string[]>([]);  
 
+ 
 
  
 
@@ -39,8 +44,6 @@ function App() {
   const closeModal = () =>  setIsOpen(false);
   
 
-  
-  
   
 /* Handler */
     
@@ -74,17 +77,41 @@ const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
 
 
     if(!hasErrorMessage)
+      {
       setError(errors);
       return;
+    }
 
+      setProducts(prev => [{...product,id:uuid() ,colors:tempColor},...prev]);
     
+      setProduct(defaultProductObj);
+      setTempColor([]);
+      closeModal();
   }
 
 
 
 
+
 /* Renders */
-  const renderProductList = productList.map(product => <ProductCard key={product.id} product={product}/>);
+  const renderProductList = products.map(product => <ProductCard key={product.id} product={product}/>);
+  const renderColorsList = colors.map(color => (<CircleColor key={color} color={color} onClick={() =>
+     {
+
+      if(tempColor.includes(color))
+      {
+        setTempColor(prev => prev.filter(item => item !== color));
+      }
+      else
+      {
+        setTempColor(prev => [...prev,color]);
+      }
+    }
+
+
+    } />
+  ));
+
 
   const renderFormInputList = formInputList.map(input => (
       <div className="flex flex-col mb-2" key={input.id}>
@@ -111,6 +138,13 @@ const onSubmitForm = (event:FormEvent<HTMLFormElement>):void => {
          <form className="space-y-3" onSubmit={onSubmitForm}>
                 {renderFormInputList}
 
+                <div className="flex items-center flex-wrap my-3 space-x-2">{renderColorsList}</div>
+
+                <div className="flex items-center text-sm flex-wrap my-3 space-x-2">
+                    {tempColor.map(color => (<span key={color} className="mb-2 text-white rounded-md  p-1"
+                     style={{backgroundColor:color}} >{color}</span>))}
+                </div>
+               
                 <div className="flex items-center space-x-3 ">
                   <Button className="bg-blue-600 hover:bg-blue-800 duration-500" >Submit</Button>
                   <Button className="bg-gray-400 hover:bg-gray-600 duration-500" onClick={onCancel}>Cancel</Button>
