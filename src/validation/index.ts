@@ -7,13 +7,14 @@
 
 
 //** product Obj == errorsObj (title, description, imageURL, price)
-export const productValidation = (product:{title:string; description:string; imageURL:string; price:string;}) => {
+export const productValidation = (product:{title:string; description:string; imageURL:string; price:string;tempColor:string[]}) => {
     //** Returns an object
-    const error: {title:string; description:string; imageURL:string; price:string;} = {
+    const error: {title:string; description:string; imageURL:string; price:string;tempColor:string} = {
         title:"",
         description:"",
         imageURL:"",
         price:"",
+        tempColor:"",
     }
 
     if(!product.title.trim() || product.title.length < 10 || product.title.length > 70)
@@ -35,7 +36,11 @@ export const productValidation = (product:{title:string; description:string; ima
     {
         error.price = "Valid, price is required!";
     }
-       
+
+    if(product.tempColor.length === 0)
+    {
+        error.tempColor = "Please select at least one color!";
+    }
 
     return error;
 }

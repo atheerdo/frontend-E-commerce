@@ -1,5 +1,5 @@
 import {v4 as uuid} from "uuid"
-import { IProduct,IFormInput } from "../interfaces";
+import { IProduct,IFormInput,ICategory } from "../interfaces";
 
 
 export const productList:IProduct [] = [
@@ -135,5 +135,29 @@ export const formInputList: IFormInput [] = [
 export const colors: string[] = [
     "#33FFFF","#000000", "#555555", "#3357FF", "#FF33A1", "#A133FF", "#33AFA1", 
     "#FF8C33", "#8C33FF", "#AAAAAA", "#FF3333", "#33FF22", "#3333FF", 
-    "#FF33FF",  "#22FFFF", "#EEAA33", "#33FF33", "#FF33AA", "#33CFFF", 
+    "#FF33FF",  "#22FFFF", "#EEAA33", "#33FF33", 
 ];
+
+export const categories:ICategory [] = [
+{
+    id:uuid(),
+    name:"Cars",
+    imageURL:"https://images.pexels.com/photos/112460/pexels-photo-112460.jpeg?auto=compress&cs=tinysrgb&w=300",
+},
+{
+    id:uuid(),
+    name:"Electronics",
+    imageURL:"https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress&cs=tinysrgb&w=300",
+},
+{
+    id:uuid(),
+    name:"Clothing",
+    imageURL:"https://images.pexels.com/photos/996329/pexels-photo-996329.jpeg?auto=compress&cs=tinysrgb&w=300",
+},
+{
+    id:uuid(),
+    name:"Furniture",
+    imageURL:"https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=300",
+},
+
+]

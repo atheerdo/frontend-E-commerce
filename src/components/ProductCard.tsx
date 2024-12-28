@@ -8,12 +8,22 @@ import CircleColor from "./CircleColor";
 
 interface IProps{
   product:IProduct;
+  setProductToEdit:(product:IProduct) => void;
+  openEditModal:() => void;
+  index:number;
+  productToEditIndex:(index:number) => void;
 }
 
-const ProductCard =({product}:IProps) => {
+const ProductCard =({product,setProductToEdit,openEditModal,index,productToEditIndex}:IProps) => {
     const {title, description, imageURL,price,colors,category} = product;
 
     const renderColorsList = colors.map(color => (<CircleColor key={color} color={color} />));
+
+    const onEdit = () => {
+        setProductToEdit(product);
+        openEditModal();
+        productToEditIndex(index);
+    }
     
     return (
         <div className="max-w-sm md:max-w-lg mx-auto md:mx-0 border p-2 rounded-md text-black flex flex-col border-indigo-400">
@@ -47,7 +57,7 @@ const ProductCard =({product}:IProps) => {
 
                     <div className="flex items-center justify-between my-2 space-x-2 mt-4">
 
-                        <Button className="bg-blue-600">Edit</Button>
+                        <Button className="bg-blue-600" onClick={onEdit}>Edit</Button>
                         
                         <Button className="bg-red-700">Delete</Button>
                 
