@@ -12,6 +12,13 @@ import {v4 as uuid} from "uuid";
 import Select from "./components/ui/Select";
 import {categories} from "./data";
 import {TProductNames} from "./Type/types";
+import toast,{Toaster} from 'react-hot-toast';
+
+const toatStyle = {
+  background: '#222',
+  color: '#fff',
+  padding: '8px',
+};
 
 
 
@@ -40,11 +47,12 @@ function App() {
   const [errors,setError] = useState({title:"",description:"",imageURL:"",price:"",tempColor:""});
   const [tempColor,setTempColor] = useState<string[]>([]);  
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  
 
  
-
- 
-
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
+  const closeRemoveModal = ()=> setIsRemoveModalOpen(false);
+  const openRemoveModal = ()=>  setIsRemoveModalOpen(true);
   
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const openEditModal = () =>  setIsOpenEditModal(true);
@@ -82,6 +90,14 @@ const onCancel = () => {
   setProduct(defaultProductObj);
   closeModal();
 }
+const onCancelEdit = () => {
+  setProductToEdit(defaultProductObj);
+  closeEditModal();
+}
+
+const onCancelRemove = () => {
+  closeRemoveModal();
+}
 
 const onSubmitHandler = (event:FormEvent<HTMLFormElement>):void => {
   event.preventDefault();
@@ -109,6 +125,7 @@ const onSubmitHandler = (event:FormEvent<HTMLFormElement>):void => {
 
 
       setProducts(prev => [{...product,id:uuid() ,colors:tempColor,category:selectedCategory},...prev]);
+      toast(`The ${product.title} Product Has Been added successfully`, {style: toatStyle});
     
       setProduct(defaultProductObj);
       setTempColor([]);
@@ -143,12 +160,25 @@ const onSubmitEditHandler = (event:FormEvent<HTMLFormElement>):void => {
       const updatedProducts = [...products];
       updatedProducts[productToEditIndex] = {...productToEdit,colors:tempColor.concat(productToEdit.colors)};
       setProducts(updatedProducts);
+      toast(`The ${productToEdit.title} Product Has Been Modified Successfully`, {style: toatStyle});
     
       setProductToEdit(defaultProductObj);
       setTempColor([]);
       closeEditModal();
   }
 
+  // -----Remove Handler
+ 
+ 
+
+  const onRemoveProduct = () => {
+    const updateProducts = [...products] // new array that contained all pervious data 
+    updateProducts.splice(productToEditIndex,1);
+    // const filtered = products.filter(product=> product.id !== productEdit.id); >>>>>>> Another solution (Course Code)
+    setProducts(updateProducts);
+    closeRemoveModal();
+    toast(`The ${productToEdit.title} Product Has Been Removed Successfully`, {style: toatStyle});
+  }
   
 
 /* Renders */
@@ -159,6 +189,7 @@ const onSubmitEditHandler = (event:FormEvent<HTMLFormElement>):void => {
       openEditModal={openEditModal}
       index={index}
       productToEditIndex={setProductToEditIndex}
+      openRemoveModal={openRemoveModal}
       />);
 
   const renderColorsList = colors.map((color) => 
@@ -215,9 +246,9 @@ const onSubmitEditHandler = (event:FormEvent<HTMLFormElement>):void => {
 
   return (
     <main className="container mx-auto  rounded-lg">
-       <div className="flex items-center justify-between m-6">
+       <div className="text-center my-5 space-y-6">
            <h1 className=" font-bold text-4xl text-indigo-600 ">Latest Products</h1>
-           <Button className="bg-blue-600 hover:bg-blue-800 " width="w-fit" onClick={openModal}>Build now</Button>
+           <Button className="bg-blue-600 hover:bg-blue-800 px-8" width="w-fit" onClick={openModal}>Build a Product</Button>
        </div>
 
         <div className="border rounded-md  m-5 grid grid-cols-1 
@@ -267,6 +298,8 @@ const onSubmitEditHandler = (event:FormEvent<HTMLFormElement>):void => {
                 <Select selected={productToEdit.category} setSelected={(value) => setProductToEdit({...productToEdit,category:value}) }/>
                
                 <div className="flex items-center flex-wrap my-3 space-x-2">{renderColorsList}</div>
+
+                {errors.tempColor ? <ErrorMessage message={errors.tempColor}/> : null} 
               
                 <div className="flex items-center text-sm flex-wrap my-3 space-x-2">
                     {tempColor.concat(productToEdit.colors).map(color => 
@@ -276,11 +309,29 @@ const onSubmitEditHandler = (event:FormEvent<HTMLFormElement>):void => {
                
                 <div className="flex items-center space-x-3 ">
                   <Button className="bg-blue-600 hover:bg-blue-800 duration-500" >Submit</Button>
-                  <Button className="bg-gray-400 hover:bg-gray-600 duration-500" onClick={onCancel}>Cancel</Button>
+                  <Button className="bg-gray-400 hover:bg-gray-600 duration-500" onClick={onCancelEdit}>Cancel</Button>
               </div>
          </form>
          
         </Modal>
+
+          {/* -----------Remove PRODUCT MODAL---------------- */} 
+          <Modal isOpen={isRemoveModalOpen} closeModal={closeRemoveModal} title='Are You Sure You Want to Remove This Product?'>
+            <p>
+              Deleting this product will remove it permanently from your inventory. Any associated data, sales history, and other related information will also be deleted. Please make sure this is the intended action.
+            </p>
+              <div className='flex space-x-2 mt-3'>
+                <Button className='bg-red-800  hover:bg-red-600' 
+                 onClick={onRemoveProduct}>Remove
+                 </Button>
+
+                <Button className='bg-gray-400  hover:bg-gray-500'
+                onClick={onCancelRemove} type='button'>CANCEL
+                </Button>
+              </div>
+        </Modal>
+
+        <Toaster/>
     </main>
   )
 }
